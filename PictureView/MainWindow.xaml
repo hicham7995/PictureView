@@ -1,18 +1,56 @@
-﻿<Window x:Class="PictureView.MainWindow"
+<Window x:Class="PictureView.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PictureView"
+        xmlns:selector="clr-namespace:PictureView.TemplateSelector"
+        xmlns:vm="clr-namespace:PictureView.ViewModels"
         mc:Ignorable="d"
         Title="Media Viewer" Height="450" Width="800" Icon="/ChatGPT Image 9 juil. 2025, 19_34_01.png">
+
+   
+    <Window.Resources>
+        <DataTemplate x:Key="ExplorerTabTemplate" DataType="{x:Type vm:ExplorerTabViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TreeView ItemsSource="{Binding ExplorerTree}" 
+       SelectedItemChanged="TreeView_SelectedItemChanged"/>
+                <ListView Grid.Column="1" ItemsSource="{Binding ExplorerFiles}">
+
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ExplorerFileViewModel}">
+                            <StackPanel>
+                                <Image Source="{Binding Icon}" Width="64" Height="64"/>
+                                <TextBlock Text="{Binding Name}" TextAlignment="Center"/>
+                                <Button Content="Open" Command="{Binding OpenCommand}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </DataTemplate>
+        <!-- Template pour l’onglet Image -->
+        <DataTemplate x:Key="ImageTabTemplate" DataType="{x:Type vm:ImageTabViewModel}">
+            <Image Source="{Binding Image}" Stretch="Uniform"/>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
-        <Menu>
+        <DockPanel LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="Open"></MenuItem>
+                 <MenuItem Header="Open" Command="{Binding OpenCommand}"></MenuItem>
                 <MenuItem Header="Recent File"></MenuItem>
-                <MenuItem Header="Browse"></MenuItem>
-                <MenuItem Header="Close"></MenuItem>
+                    <MenuItem Header="Browse" Command="{Binding BrowseCommand}" />
+                    <MenuItem Header="Close"></MenuItem>
                 <MenuItem Header="Close all"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Save"></MenuItem>
@@ -87,5 +125,19 @@
             </MenuItem>
             
         </Menu>
+
+            <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplateSelector>
+                    <selector:TabContentTemplateSelector
+         ExplorerTemplate="{StaticResource ExplorerTabTemplate}"
+         ImageTemplate="{StaticResource ImageTabTemplate}" />
+                </TabControl.ContentTemplateSelector>
+            </TabControl>
+        </DockPanel>
     </Grid>
 </Window>

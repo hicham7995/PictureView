@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
 namespace PictureView
 {
-    public class BaseCommand : ICommand
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+
+    public class RelayCommand : ICommand
     {
-        public Action Action { get; }
-
-        public event EventHandler? CanExecuteChanged;
-
-        public BaseCommand(Action action)
+        private readonly Action<object?> _execute;
+        private readonly Predicate<object?>? _canExecute;
+        public RelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null)
         {
-            this.Action = action;
+            this._execute = execute;
+            this._canExecute = canExecute;
         }
 
-        public bool CanExecute(object? parameter)
-        {
-            return true;
-        }
+        public bool CanExecute(object? parameter) => this._canExecute?.Invoke(parameter) ?? true;
 
-        public void Execute(object? parameter)
+        public void Execute(object? parameter) => this._execute(parameter);
+
+        public event EventHandler? CanExecuteChanged
         {
-            this.Action();
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

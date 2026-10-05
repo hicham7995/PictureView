@@ -1,0 +1,65 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs}]
+indent_style = space
+indent_size = 4
+# Trie les directives using System.* en premier
+dotnet_sort_system_directives_first = true
+# Sépare les groupes de using (System | autres)
+dotnet_separate_import_directive_groups = true
+# Place des using à l'extérieur des namespaces (choix de style)
+csharp_using_directive_placement = inside_namespace
+
+# Signaler les usings inutiles
+dotnet_diagnostic.IDE0005.severity = suggestion
+
+# Désactiver la règle SA1633 (en-tête de fichier requis)
+dotnet_diagnostic.SA1633.severity = none
+
+# Quelques règles de style C# communes (optionnel)
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = false:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+# Formatage et qualité
+dotnet_diagnostic.IDE0055.severity = suggestion
+
+# StyleCop analyzers: ordering des membres (ex: public avant private)
+# Pour que ces règles soient prises en compte, ajoutez le package NuGet 'StyleCop.Analyzers'
+# Exemple (PowerShell) : dotnet add <YourProject>.csproj package StyleCop.Analyzers
+dotnet_diagnostic.SA1202.severity = warning  # Elements must be ordered by access
+dotnet_diagnostic.SA1201.severity = suggestion # Elements must appear in the correct order
+dotnet_diagnostic.SA1204.severity = suggestion
+
+## Désactiver la règle SA1600 (documentation requise)
+# Mettre à 'none' pour désactiver complètement
+dotnet_diagnostic.SA1600.severity = none
+
+## Trailing whitespace : suppression automatique
+# Trim des espaces de fin de ligne (Visual Studio respecte cette clé)
+trim_trailing_whitespace = true
+# Signaler SA1028 en suggestion (corrigeable via Code Cleanup / trim)
+dotnet_diagnostic.SA1028.severity = suggestion
+# Patch anchor: context line added to ensure patch applies cleanly
+#############################
+# Exceptions pour AssemblyInfo
+#############################
+[AssemblyInfo.cs]
+# Ne pas appliquer les règles de style/StyleCop à ce fichier d'assembly
+csharp_using_directive_placement = outside_namespace
+dotnet_diagnostic.SA1101.severity = none
+dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1202.severity = none
+dotnet_diagnostic.SA1204.severity = none
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1028.severity = none
+dotnet_diagnostic.IDE0005.severity = none
+dotnet_diagnostic.IDE0055.severity = none
+
+

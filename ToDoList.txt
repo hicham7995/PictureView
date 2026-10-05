@@ -1,0 +1,6 @@
+------  07-09 --------
+Passage sur Prism
+Compilation ok
+Ne fonctionne plus : 
+ - L'ouverture des fichiers
+ - La fermeture de l'application
