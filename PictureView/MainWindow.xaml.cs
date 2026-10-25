@@ -22,11 +22,6 @@ namespace PictureView
         {
             this.InitializeComponent();
             this.DataContext = viewModel;
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-
-        }
+        }      
     }
 }

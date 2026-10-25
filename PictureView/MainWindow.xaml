@@ -17,8 +17,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TreeView ItemsSource="{Binding ExplorerTree}" 
-       SelectedItemChanged="TreeView_SelectedItemChanged"/>
+                <TreeView ItemsSource="{Binding ExplorerTree}"/>
                 <ListView Grid.Column="1" ItemsSource="{Binding ExplorerFiles}">
 
                     <ListView.ItemsPanel>
