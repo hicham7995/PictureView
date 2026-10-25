@@ -23,6 +23,6 @@ namespace PictureViewerTests
             viewmodel.OpenCommand.Execute(null);
             dialogServiceMock.Verify(o=>o.OpenFiles(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
             Assert.That(viewmodel.Tabs.Count, Is.EqualTo(1));   
-        }
+        }        
     }
 }

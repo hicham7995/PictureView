@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ChatGPT Image 9 juil. 2025, 19_34_01.png" />
+    <None Remove="app-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="ChatGPT Image 9 juil. 2025, 19_34_01.png" />
+    <Resource Include="app-icon.png" />
   </ItemGroup>
 
 </Project>

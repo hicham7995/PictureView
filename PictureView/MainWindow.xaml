@@ -7,7 +7,7 @@
         xmlns:selector="clr-namespace:PictureView.TemplateSelector"
         xmlns:vm="clr-namespace:PictureView.ViewModels"
         mc:Ignorable="d"
-        Title="Media Viewer" Height="450" Width="800" Icon="/ChatGPT Image 9 juil. 2025, 19_34_01.png">
+        Title="Media Viewer" Height="450" Width="800" Icon="pack://application:,,,/PictureView;component/app-icon.png">
 
    
     <Window.Resources>

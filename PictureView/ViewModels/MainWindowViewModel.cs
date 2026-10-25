@@ -37,10 +37,10 @@ namespace PictureView.ViewModels
 
         public MainWindowViewModel(IFileDialogService fileDialogService)
         {
-           // this.QuitCommand = new RelayCommand(_ => view.Close());
             this.fileDialogService = fileDialogService;
             this.OpenCommand = new RelayCommand(_ => this.OpenFiles());
             this.BrowseCommand = new RelayCommand(_ => this.ShowExplorerTab());
+            this.QuitCommand = new RelayCommand(_ => System.Windows.Application.Current.Shutdown());
         }
 
         private void ShowExplorerTab()
