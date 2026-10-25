@@ -9,132 +9,157 @@
         mc:Ignorable="d"
         Title="Media Viewer" Height="450" Width="800" Icon="pack://application:,,,/PictureView;component/app-icon.png">
 
-   
     <Window.Resources>
         <DataTemplate x:Key="ExplorerTabTemplate" DataType="{x:Type vm:ExplorerTabViewModel}">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TreeView ItemsSource="{Binding ExplorerTree}"/>
-                <ListView Grid.Column="1" ItemsSource="{Binding ExplorerFiles}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:ExplorerFileViewModel}">
-                            <StackPanel>
-                                <Image Source="{Binding Icon}" Width="64" Height="64"/>
-                                <TextBlock Text="{Binding Name}" TextAlignment="Center"/>
-                                <Button Content="Open" Command="{Binding OpenCommand}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <Grid Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Address:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Grid.Column="1" Text="{Binding CurrentFolder, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+                    <Button Grid.Column="2" Content="Go" Margin="8,0,0,0" Command="{Binding GoToFolderCommand}" Width="40"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="220"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TreeView ItemsSource="{Binding ExplorerTree}" Margin="0,0,4,0">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Name}" MouseLeftButtonUp="TreeViewItem_MouseLeftButtonUp"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <ListView Grid.Column="1" ItemsSource="{Binding ExplorerFiles}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="FileItem_MouseDoubleClick">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:ExplorerFileViewModel}">
+                                <StackPanel Width="120" Margin="8">
+                                    <Image Source="{Binding Icon}" Width="64" Height="64" Stretch="Uniform"/>
+                                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" TextAlignment="Center"/>
+                                    <TextBlock Text="{Binding DisplayDate}" FontSize="10" Foreground="Gray" TextAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
             </Grid>
         </DataTemplate>
-        <!-- Template pour l’onglet Image -->
+
         <DataTemplate x:Key="ImageTabTemplate" DataType="{x:Type vm:ImageTabViewModel}">
             <Image Source="{Binding Image}" Stretch="Uniform"/>
         </DataTemplate>
     </Window.Resources>
+
     <Grid>
         <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                 <MenuItem Header="Open" Command="{Binding OpenCommand}"></MenuItem>
-                <MenuItem Header="Recent File"></MenuItem>
-                    <MenuItem Header="Browse" Command="{Binding BrowseCommand}" />
-                    <MenuItem Header="Close"></MenuItem>
-                <MenuItem Header="Close all"></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Save"></MenuItem>
-                <MenuItem Header="Save As"></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Print"></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Quit" Command="{Binding Path=QuitCommand}"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Edition">
-                <MenuItem Header="Cut"></MenuItem>
-                <MenuItem Header="Copy"></MenuItem>
-                <MenuItem Header="Paste"></MenuItem>
-                <MenuItem Header="Delete"></MenuItem>
-                <MenuItem Header="Rename"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Full screen"></MenuItem>
-                <MenuItem Header="Real size"></MenuItem>
-                <MenuItem Header="Adjust">
-                    <MenuItem Header="No Adjustment"></MenuItem>
-                    <MenuItem Header="Adjust to the size of the window"></MenuItem>
-                    <MenuItem Header="Adjust to the width of the window"></MenuItem>
-                </MenuItem>
-                <Separator>
-                </Separator>
-                <MenuItem Header="Zoom +"></MenuItem>
-                <MenuItem Header="Zoom -"></MenuItem>
+            <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File">
-                    <MenuItem Header="Next File"></MenuItem>
-                    <MenuItem Header="Previous File"></MenuItem>
-                    <MenuItem Header="Last One"></MenuItem>
-                    <MenuItem Header="First One"></MenuItem>
+                    <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
+                    <MenuItem Header="Recent File"/>
+                    <MenuItem Header="Browse" Command="{Binding BrowseCommand}"/>
+                    <MenuItem Header="Close"/>
+                    <MenuItem Header="Close all"/>
+                    <Separator/>
+                    <MenuItem Header="Save"/>
+                    <MenuItem Header="Save As"/>
+                    <Separator/>
+                    <MenuItem Header="Print"/>
+                    <Separator/>
+                    <MenuItem Header="Quit" Command="{Binding Path=QuitCommand}"/>
                 </MenuItem>
-                <MenuItem Header="Display Tabs"></MenuItem>
-                <MenuItem Header="Display Tool bar"></MenuItem>
-                <MenuItem Header="Display State bar"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Image">
-                <MenuItem Header="Number of used colors"></MenuItem>
-                <MenuItem Header="Rotate">
-                    <MenuItem Header="90° clock wise"></MenuItem>
-                    <MenuItem Header="90° reverse clock wise"></MenuItem>
-                    <MenuItem Header="180°"></MenuItem>
+                <MenuItem Header="Edition">
+                    <MenuItem Header="Cut"/>
+                    <MenuItem Header="Copy"/>
+                    <MenuItem Header="Paste"/>
+                    <MenuItem Header="Delete"/>
+                    <MenuItem Header="Rename"/>
                 </MenuItem>
-                <MenuItem Header="Mirror">
-                    <MenuItem Header="Vertical"></MenuItem>
-                    <MenuItem Header="Horizontal"></MenuItem>
+                <MenuItem Header="View">
+                    <MenuItem Header="Full screen"/>
+                    <MenuItem Header="Real size"/>
+                    <MenuItem Header="Adjust">
+                        <MenuItem Header="No Adjustment"/>
+                        <MenuItem Header="Adjust to the size of the window"/>
+                        <MenuItem Header="Adjust to the width of the window"/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Zoom +"/>
+                    <MenuItem Header="Zoom -"/>
+                    <MenuItem Header="File">
+                        <MenuItem Header="Next File"/>
+                        <MenuItem Header="Previous File"/>
+                        <MenuItem Header="Last One"/>
+                        <MenuItem Header="First One"/>
+                    </MenuItem>
+                    <MenuItem Header="Display Tabs"/>
+                    <MenuItem Header="Display Tool bar"/>
+                    <MenuItem Header="Display State bar"/>
                 </MenuItem>
-                <MenuItem Header="Resize"></MenuItem>
-                <MenuItem Header="Correct red eyes"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Tools">
-                <MenuItem Header="Find a file"></MenuItem>
-                <MenuItem Header="Hexadecimal display"></MenuItem>
-                <MenuItem Header="Diaporama"></MenuItem>
-                <MenuItem Header="Send by email"></MenuItem>
-                <MenuItem Header="Parameters"></MenuItem>
-                <MenuItem Header="Slide show"></MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Place the selected pictures on the screen"></MenuItem>                
-            </MenuItem>
-            <MenuItem Header="Window">
-                <MenuItem Header="Tile"></MenuItem>
-                <MenuItem Header="Tile Horizontally"></MenuItem>
-                <MenuItem Header="Tile Vertically"></MenuItem>
-                <MenuItem Header="Minimize all"></MenuItem>
-                <MenuItem Header="Restore all"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Info">
-                <MenuItem Header="Help"></MenuItem>
-            </MenuItem>
-            
-        </Menu>
+                <MenuItem Header="Image">
+                    <MenuItem Header="Number of used colors"/>
+                    <MenuItem Header="Rotate">
+                        <MenuItem Header="90° clock wise"/>
+                        <MenuItem Header="90° reverse clock wise"/>
+                        <MenuItem Header="180°"/>
+                    </MenuItem>
+                    <MenuItem Header="Mirror">
+                        <MenuItem Header="Vertical"/>
+                        <MenuItem Header="Horizontal"/>
+                    </MenuItem>
+                    <MenuItem Header="Resize"/>
+                    <MenuItem Header="Correct red eyes"/>
+                </MenuItem>
+                <MenuItem Header="Tools">
+                    <MenuItem Header="Find a file"/>
+                    <MenuItem Header="Hexadecimal display"/>
+                    <MenuItem Header="Diaporama"/>
+                    <MenuItem Header="Send by email"/>
+                    <MenuItem Header="Parameters"/>
+                    <MenuItem Header="Slide show"/>
+                    <Separator/>
+                    <MenuItem Header="Place the selected pictures on the screen"/>
+                </MenuItem>
+                <MenuItem Header="Window">
+                    <MenuItem Header="Tile"/>
+                    <MenuItem Header="Tile Horizontally"/>
+                    <MenuItem Header="Tile Vertically"/>
+                    <MenuItem Header="Minimize all"/>
+                    <MenuItem Header="Restore all"/>
+                </MenuItem>
+                <MenuItem Header="Info">
+                    <MenuItem Header="Help"/>
+                </MenuItem>
+            </Menu>
 
             <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Title}"/>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplateSelector>
                     <selector:TabContentTemplateSelector
-         ExplorerTemplate="{StaticResource ExplorerTabTemplate}"
-         ImageTemplate="{StaticResource ImageTabTemplate}" />
+                        ExplorerTemplate="{StaticResource ExplorerTabTemplate}"
+                        ImageTemplate="{StaticResource ImageTabTemplate}"/>
                 </TabControl.ContentTemplateSelector>
             </TabControl>
         </DockPanel>

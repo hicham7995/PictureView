@@ -1,28 +1,43 @@
 namespace PictureView.ViewModels
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
     using System.IO;
-    using System.Text;
     using System.Windows.Input;
+
     public class ExplorerFileViewModel : BindableBase
     {
+        public ExplorerFileViewModel(string path, ICommand openImageCommand)
+        {
+            this.Path = path ?? throw new ArgumentNullException(nameof(path));
+            this.OpenCommand = new RelayCommand(
+                _ => openImageCommand?.Execute(this.Path),
+                _ => File.Exists(this.Path));
+            this.LastModified = File.GetLastWriteTime(this.Path);
+            this.Icon = this.GetIcon();
+        }
+
         public string Path { get; }
 
         public string Name => System.IO.Path.GetFileName(this.Path);
 
-        // Commande exposée pour la vue (ouvre ce fichier)
+        public DateTime LastModified { get; }
+
+        public string DisplayDate => this.LastModified.ToString("dd/MM/yyyy HH:mm");
+
+        public string Icon { get; }
+
         public ICommand OpenCommand { get; }
 
-        public ExplorerFileViewModel(string path, ICommand openImageCommand)
+        private string GetIcon()
         {
-            this.Path = path ?? throw new ArgumentNullException(nameof(path));
+            var extension = System.IO.Path.GetExtension(this.Path).ToLowerInvariant();
 
-            // wrapper qui appelle la commande parent avec le chemin comme paramètre
-            this.OpenCommand = new RelayCommand(
-                _ => openImageCommand?.Execute(this.Path),
-                _ => File.Exists(this.Path));
+            if (extension is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".gif" or ".tif" or ".tiff" or ".webp" or ".ico")
+            {
+                return this.Path;
+            }
+
+            return "pack://application:,,,/PictureView;component/app-icon.png";
         }
     }
 }

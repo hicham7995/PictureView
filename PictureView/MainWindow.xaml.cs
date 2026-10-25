@@ -1,17 +1,9 @@
 namespace PictureView
 {
-    using PictureView.Dialogs;
     using PictureView.ViewModels;
-    using System.Text;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
     using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Navigation;
-    using System.Windows.Shapes;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -22,6 +14,33 @@ namespace PictureView
         {
             this.InitializeComponent();
             this.DataContext = viewModel;
-        }      
+        }
+
+        private void TreeViewItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not FrameworkElement element)
+            {
+                return;
+            }
+
+            var item = element.DataContext as ExplorerItemViewModel;
+            item?.OnSelected();
+        }
+
+        private void FileItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListView listView)
+            {
+                var selected = listView.SelectedItem as ExplorerFileViewModel;
+                selected?.OpenCommand.Execute(null);
+                return;
+            }
+
+            if (sender is FrameworkElement element)
+            {
+                var file = element.DataContext as ExplorerFileViewModel;
+                file?.OpenCommand.Execute(null);
+            }
+        }
     }
 }

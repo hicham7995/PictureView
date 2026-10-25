@@ -1,42 +1,54 @@
 namespace PictureView.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
-    using System.Text;
+    using System.Linq;
 
     public class ExplorerItemViewModel : BindableBase
     {
-        public string Path { get; }
-
-        public string Name => System.IO.Path.GetFileName(this.Path);
-
-        public ObservableCollection<ExplorerItemViewModel> Children { get; } = new ();
-
-        private ExplorerTabViewModel _parent;
+        private readonly ExplorerTabViewModel parent;
+        private bool childrenLoaded;
 
         public ExplorerItemViewModel(string path, ExplorerTabViewModel parent)
         {
-            this.Path = path;
-            this._parent = parent;
+            this.Path = path ?? throw new ArgumentNullException(nameof(path));
+            this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
+        }
+
+        public string Path { get; }
+
+        public string Name => string.IsNullOrEmpty(System.IO.Path.GetFileName(this.Path))
+            ? this.Path.TrimEnd(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar)
+            : System.IO.Path.GetFileName(this.Path);
+
+        public ObservableCollection<ExplorerItemViewModel> Children { get; } = new();
+
+        public void OnSelected()
+        {
+            this.LoadChildren();
+            this.parent.LoadFiles(this.Path);
+        }
+
+        public void LoadChildren()
+        {
+            if (this.childrenLoaded)
+            {
+                return;
+            }
+
+            this.childrenLoaded = true;
 
             try
             {
-                foreach (var dir in Directory.GetDirectories(path))
+                foreach (var directory in Directory.EnumerateDirectories(this.Path).OrderBy(directory => directory, StringComparer.OrdinalIgnoreCase))
                 {
-                    this.Children.Add(new ExplorerItemViewModel(dir, parent));
+                    this.Children.Add(new ExplorerItemViewModel(directory, this.parent));
                 }
             }
             catch
             {
             }
-        }
-
-        // Appelé lors de la sélection dans le TreeView
-        public void OnSelected()
-        {
-            this._parent.LoadFiles(this.Path);
         }
     }
 }

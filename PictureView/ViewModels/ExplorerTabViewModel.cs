@@ -1,44 +1,106 @@
 namespace PictureView.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
-    using System.Text;
+    using System.Linq;
     using System.Windows.Input;
 
     public class ExplorerTabViewModel : BindableBase
     {
-        public ObservableCollection<ExplorerItemViewModel> ExplorerTree { get; } = new();
-        public ObservableCollection<ExplorerFileViewModel> ExplorerFiles { get; } = new();
-        public ICommand OpenImageCommand { get; }
+        private string currentFolder;
 
         public ExplorerTabViewModel(ICommand openImageCommand)
         {
             this.OpenImageCommand = openImageCommand;
+            this.GoToFolderCommand = new RelayCommand(_ => this.NavigateToCurrentPath());
 
-            // Dossier racine par défaut : Images
-            var root = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            var rootItem = new ExplorerItemViewModel(root, this);
-            this.ExplorerTree.Add(rootItem);
-            this.LoadFiles(root);
+            this.currentFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            this.BuildExplorerTree();
+            this.LoadFiles(this.currentFolder);
         }
 
-        // Charge les fichiers du dossier sélectionné
-        public void LoadFiles(string folder)
-        {
-            this.ExplorerFiles.Clear();
+        public ObservableCollection<ExplorerItemViewModel> ExplorerTree { get; } = new();
 
-            try
+        public ObservableCollection<ExplorerFileViewModel> ExplorerFiles { get; } = new();
+
+        public ICommand OpenImageCommand { get; }
+
+        public RelayCommand GoToFolderCommand { get; }
+
+        public string CurrentFolder
+        {
+            get => this.currentFolder;
+            set
             {
-                foreach (var file in Directory.GetFiles(folder))
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    this.ExplorerFiles.Add(new ExplorerFileViewModel(file, this.OpenImageCommand));
+                    return;
+                }
+
+                var fullPath = Path.GetFullPath(value);
+                if (Directory.Exists(fullPath))
+                {
+                    this.LoadFiles(fullPath);
                 }
             }
-            catch
+        }
+
+        public void NavigateToCurrentPath()
+        {
+            if (string.IsNullOrWhiteSpace(this.currentFolder))
             {
-                /* Gérer les exceptions d'accès si besoin */
+                return;
+            }
+
+            var fullPath = Path.GetFullPath(this.currentFolder);
+            if (Directory.Exists(fullPath))
+            {
+                this.LoadFiles(fullPath);
+            }
+        }
+
+        public void OpenFile(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                this.OpenImageCommand.Execute(filePath);
+            }
+        }
+
+        public void LoadFiles(string folder)
+        {
+            if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+            {
+                return;
+            }
+
+            var fullPath = Path.GetFullPath(folder);
+            this.SetProperty(ref this.currentFolder, fullPath);
+            this.ExplorerFiles.Clear();
+
+            foreach (var file in Directory.EnumerateFiles(fullPath).OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase))
+            {
+                this.ExplorerFiles.Add(new ExplorerFileViewModel(file, this.OpenImageCommand));
+            }
+        }
+
+        private void BuildExplorerTree()
+        {
+            this.ExplorerTree.Clear();
+
+            foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
+            {
+                this.ExplorerTree.Add(new ExplorerItemViewModel(drive.RootDirectory.FullName, this));
+            }
+
+            if (!this.ExplorerTree.Any())
+            {
+                var fallbackPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (Directory.Exists(fallbackPath))
+                {
+                    this.ExplorerTree.Add(new ExplorerItemViewModel(fallbackPath, this));
+                }
             }
         }
     }
