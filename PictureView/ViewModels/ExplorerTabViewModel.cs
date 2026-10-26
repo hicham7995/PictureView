@@ -20,9 +20,9 @@ namespace PictureView.ViewModels
             this.LoadFiles(this.currentFolder);
         }
 
-        public ObservableCollection<ExplorerItemViewModel> ExplorerTree { get; } = new();
+        public ObservableCollection<ExplorerItemViewModel> ExplorerTree { get; } = new ();
 
-        public ObservableCollection<ExplorerFileViewModel> ExplorerFiles { get; } = new();
+        public ObservableCollection<ExplorerFileViewModel> ExplorerFiles { get; } = new ();
 
         public ICommand OpenImageCommand { get; }
 
@@ -46,28 +46,6 @@ namespace PictureView.ViewModels
             }
         }
 
-        public void NavigateToCurrentPath()
-        {
-            if (string.IsNullOrWhiteSpace(this.currentFolder))
-            {
-                return;
-            }
-
-            var fullPath = Path.GetFullPath(this.currentFolder);
-            if (Directory.Exists(fullPath))
-            {
-                this.LoadFiles(fullPath);
-            }
-        }
-
-        public void OpenFile(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                this.OpenImageCommand.Execute(filePath);
-            }
-        }
-
         public void LoadFiles(string folder)
         {
             if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
@@ -85,6 +63,15 @@ namespace PictureView.ViewModels
             }
         }
 
+        private void NavigateToCurrentPath()
+        {
+            var fullPath = Path.GetFullPath(this.currentFolder);
+            if (Directory.Exists(fullPath))
+            {
+                this.LoadFiles(fullPath);
+            }
+        }      
+
         private void BuildExplorerTree()
         {
             this.ExplorerTree.Clear();
@@ -92,16 +79,7 @@ namespace PictureView.ViewModels
             foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
             {
                 this.ExplorerTree.Add(new ExplorerItemViewModel(drive.RootDirectory.FullName, this));
-            }
-
-            if (!this.ExplorerTree.Any())
-            {
-                var fallbackPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (Directory.Exists(fallbackPath))
-                {
-                    this.ExplorerTree.Add(new ExplorerItemViewModel(fallbackPath, this));
-                }
-            }
-        }
+            }     
+         }
     }
 }

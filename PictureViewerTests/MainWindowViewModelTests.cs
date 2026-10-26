@@ -23,6 +23,17 @@ namespace PictureViewerTests
             viewmodel.OpenCommand.Execute(null);
             dialogServiceMock.Verify(o=>o.OpenFiles(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
             Assert.That(viewmodel.Tabs.Count, Is.EqualTo(1));   
-        }        
+        }
+
+        [Test]
+        public void Should_Open_Explorer_Tab_When_Menu_Browse()
+        {
+            var mainWindowMock = new Mock<IMainWindow>();
+            var dialogServiceMock = new Mock<IFileDialogService>();
+            var viewmodel = new MainWindowViewModel(dialogServiceMock.Object);
+            viewmodel.BrowseCommand.Execute(null);
+            Assert.That(viewmodel.Tabs.Count, Is.EqualTo(1));
+            Assert.That(viewmodel.SelectedTab, Is.TypeOf<ExplorerTabViewModel>());
+        }
     }
 }
