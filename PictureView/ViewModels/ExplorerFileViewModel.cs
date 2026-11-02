@@ -4,6 +4,9 @@ namespace PictureView.ViewModels
     using System.IO;
     using System.Windows.Input;
 
+    /// <summary>
+    /// This item is created when using browse view model it's the right pane items
+    /// </summary>
     public class ExplorerFileViewModel : BindableBase
     {
         public ExplorerFileViewModel(string path, ICommand openImageCommand)

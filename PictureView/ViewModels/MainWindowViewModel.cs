@@ -5,6 +5,7 @@ namespace PictureView.ViewModels
     using System.Windows;
     using System.Windows.Input;
     using PictureView.Dialogs;
+    using PictureView.Services;
 
     public class MainWindowViewModel : BindableBase, IMainWindowViewModel
     {
@@ -35,12 +36,12 @@ namespace PictureView.ViewModels
 
         private object? selectedTab;
 
-        public MainWindowViewModel(IFileDialogService fileDialogService)
+        public MainWindowViewModel(IFileDialogService fileDialogService, IApplicationShutDownService applicationShutDownService)
         {
             this.fileDialogService = fileDialogService;
             this.OpenCommand = new RelayCommand(_ => this.OpenFiles());
             this.BrowseCommand = new RelayCommand(_ => this.ShowExplorerTab());
-            this.QuitCommand = new RelayCommand(_ => System.Windows.Application.Current.Shutdown());
+            this.QuitCommand = new RelayCommand(_ => applicationShutDownService.ShutDown());
         }
 
         private void ShowExplorerTab()

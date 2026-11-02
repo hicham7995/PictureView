@@ -5,6 +5,7 @@ namespace PictureView
     using System.Windows;
 
     using PictureView.Dialogs;
+    using PictureView.Services;
     using PictureView.ViewModels;
 
     /// <summary>
@@ -22,6 +23,7 @@ namespace PictureView
             containerRegistry.RegisterScoped<IFileDialogService, FileDialogService>();
             containerRegistry.RegisterScoped<IMainWindowViewModel, MainWindowViewModel>();
             containerRegistry.RegisterScoped<IMainWindow, MainWindow>();
+            containerRegistry.RegisterScoped<IApplicationShutDownService, ApplicationShutDownService>();
             containerRegistry.RegisterScoped<ExplorerTabViewModel>();
             containerRegistry.RegisterScoped<ImageTabViewModel>();
         }

@@ -5,6 +5,9 @@ namespace PictureView.ViewModels
     using System.IO;
     using System.Linq;
 
+    /// <summary>
+    /// This class is created when using browse mode it's view model for left pane treeview
+    /// </summary>
     public class ExplorerItemViewModel : BindableBase
     {
         private readonly ExplorerTabViewModel parent;

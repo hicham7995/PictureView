@@ -6,6 +6,9 @@ namespace PictureView.ViewModels
     using System.Linq;
     using System.Windows.Input;
 
+    /// <summary>
+    /// This class is created when using browse mode it's tab view model for browser tab -> only one is possible
+    /// </summary>
     public class ExplorerTabViewModel : BindableBase
     {
         private string currentFolder;
@@ -20,8 +23,14 @@ namespace PictureView.ViewModels
             this.LoadFiles(this.currentFolder);
         }
 
+        /// <summary>
+        /// The pane on the left
+        /// </summary>
         public ObservableCollection<ExplorerItemViewModel> ExplorerTree { get; } = new ();
 
+        /// <summary>
+        /// The main pain
+        /// </summary>
         public ObservableCollection<ExplorerFileViewModel> ExplorerFiles { get; } = new ();
 
         public ICommand OpenImageCommand { get; }
