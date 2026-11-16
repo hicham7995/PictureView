@@ -35,7 +35,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TreeView ItemsSource="{Binding ExplorerTree}" Margin="0,0,4,0">
+                    <TreeView ItemsSource="{Binding ExplorerTree}" Margin="0,0,4,0" Name="ExplorerTreeView">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding Name}" MouseLeftButtonUp="TreeViewItem_MouseLeftButtonUp"/>
