@@ -7,5 +7,9 @@ namespace PictureView.Dialogs
     public interface IFileDialogService
     {
         string[] OpenFiles(string filter, bool multiSelect);
+
+        string SaveFile(string filter, string initialDirectory);
+
+        bool PrintImage(System.Windows.Media.Imaging.BitmapSource image);
     }
 }

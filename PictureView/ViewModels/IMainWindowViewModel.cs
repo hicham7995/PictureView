@@ -15,5 +15,15 @@ namespace PictureView.ViewModels
         RelayCommand QuitCommand { get; set; }
 
         RelayCommand BrowseCommand { get; set; }
+
+        RelayCommand CloseCommand { get; }
+
+        RelayCommand CloseAllCommand { get; }
+
+        RelayCommand SaveCommand { get; }
+
+        RelayCommand SaveAsCommand { get; }
+
+        RelayCommand PrintCommand { get; }
     }
 }

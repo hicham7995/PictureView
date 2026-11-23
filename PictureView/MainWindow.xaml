@@ -74,15 +74,23 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File">
                     <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
-                    <MenuItem Header="Recent File"/>
+                    <MenuItem Header="Recent File" ItemsSource="{Binding RecentFiles}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header" Value="{Binding}"/>
+                                <Setter Property="Command" Value="{Binding DataContext.RecentFileCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
                     <MenuItem Header="Browse" Command="{Binding BrowseCommand}"/>
-                    <MenuItem Header="Close"/>
-                    <MenuItem Header="Close all"/>
+                    <MenuItem Header="Close" Command="{Binding CloseCommand}"/>
+                    <MenuItem Header="Close all" Command="{Binding CloseAllCommand}"/>
                     <Separator/>
-                    <MenuItem Header="Save"/>
-                    <MenuItem Header="Save As"/>
+                    <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                    <MenuItem Header="Save As" Command="{Binding SaveAsCommand}"/>
                     <Separator/>
-                    <MenuItem Header="Print"/>
+                    <MenuItem Header="Print" Command="{Binding PrintCommand}"/>
                     <Separator/>
                     <MenuItem Header="Quit" Command="{Binding Path=QuitCommand}"/>
                 </MenuItem>
@@ -153,7 +161,17 @@
             <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Title}"/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right"
+                                    Content="×"
+                                    Width="20"
+                                    Height="20"
+                                    Padding="0"
+                                    Command="{Binding DataContext.CloseCommand, RelativeSource={RelativeSource AncestorType=TabControl}}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="Close tab"/>
+                            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        </DockPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplateSelector>
